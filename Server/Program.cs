@@ -35,7 +35,11 @@ namespace Server
             IPEndPoint localEndPoint = new IPEndPoint(ipAddress, 11000);
 
             // Create a TCP/IP socket.
-            Socket listener = new Socket(ipAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+            Socket listener = new Socket(
+                addressFamily: ipAddress.AddressFamily,
+                socketType: SocketType.Stream,
+                protocolType: ProtocolType.Tcp
+            );
 
             // Bind the socket to the local endpoint and listen for incoming connection.
             try

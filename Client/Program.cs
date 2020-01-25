@@ -42,7 +42,11 @@ namespace Client
                 IPEndPoint remoteEP = new IPEndPoint(ipAddress, port);
 
                 // Create a  TCP/IP socket.
-                Socket client = new Socket(ipAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+                Socket client = new Socket(
+                    addressFamily: ipAddress.AddressFamily,
+                    socketType: SocketType.Stream,
+                    protocolType: ProtocolType.Tcp
+                );
 
                 // Connect to the remote endpoint.
                 client.BeginConnect(
