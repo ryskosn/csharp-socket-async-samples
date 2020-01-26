@@ -101,8 +101,10 @@ namespace Client
             try
             {
                 // Create the state object.
-                StateObject state = new StateObject();
-                state.workSocket = client;
+                StateObject state = new StateObject
+                {
+                    workSocket = client
+                };
 
                 // Begin receiving the data from the remote device.
                 client.BeginReceive(

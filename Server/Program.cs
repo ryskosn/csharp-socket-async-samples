@@ -77,8 +77,11 @@ namespace Server
             Socket handler = listener.EndAccept(ar);
 
             // Create the state object.
-            StateObject state = new StateObject();
-            state.workSocket = handler;
+            StateObject state = new StateObject
+            {
+                workSocket = handler
+            };
+
             handler.BeginReceive(
                 buffer: state.buffer,
                 offset: 0,
