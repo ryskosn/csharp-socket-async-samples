@@ -39,7 +39,7 @@ namespace Client
                 // the name of the remote device is "host.contoso.com" <- ???
                 IPHostEntry ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());
                 IPAddress ipAddress = ipHostInfo.AddressList[0];
-                IPEndPoint remoteEP = new IPEndPoint(ipAddress, port);
+                IPEndPoint remoteEndPoint = new IPEndPoint(ipAddress, port);
 
                 // Create a  TCP/IP socket.
                 Socket client = new Socket(
@@ -50,7 +50,7 @@ namespace Client
 
                 // Connect to the remote endpoint.
                 client.BeginConnect(
-                    remoteEP: remoteEP,
+                    remoteEP: remoteEndPoint,
                     callback: new AsyncCallback(ConnectCallback),
                     state: client
                 );
