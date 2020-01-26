@@ -48,6 +48,8 @@ namespace Server
             try
             {
                 listener.Bind(localEndPoint);
+                // param backlog: 
+                // The maximum length of the pending connections queue.
                 listener.Listen(100);
 
                 while (true)
@@ -90,7 +92,7 @@ namespace Server
                 offset: 0,
                 size: StateObject.BufferSize,
                 socketFlags: 0,
-                new AsyncCallback(ReadCallback),
+                callback: new AsyncCallback(ReadCallback),
                 state: state
             );
         }
