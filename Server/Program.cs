@@ -145,6 +145,7 @@ namespace Server
         {
             // Convert the string data to byte data using ASCII encoding.
             byte[] byteData = Encoding.ASCII.GetBytes(data);
+
             // Begin sending the data to the remote device.
             handler.BeginSend(
                 buffer: byteData,
