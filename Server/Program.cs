@@ -20,6 +20,9 @@ namespace Server
 
     public class AsynchronousSocketListener
     {
+        // The port number for the remote device.
+        private const int port = 11000;
+
         // Thread signal.
         public static ManualResetEvent allDone = new ManualResetEvent(false);
         // constructor
@@ -32,7 +35,7 @@ namespace Server
             // running the listener is "host.contoso.com" <- ???
             IPHostEntry ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());
             IPAddress ipAddress = ipHostInfo.AddressList[0];
-            IPEndPoint localEndPoint = new IPEndPoint(ipAddress, 11000);
+            IPEndPoint localEndPoint = new IPEndPoint(ipAddress, port);
 
             // Create a TCP/IP socket.
             Socket listener = new Socket(
