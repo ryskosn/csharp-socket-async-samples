@@ -29,8 +29,18 @@ $ dotnet run --project Client/
 
 コストラクタに `false` を渡すことで非シグナル状態にする。
 
+今回のコードでは server では 1 つ、client では 3 つ作成している。
+
 ```csharp
+// Server
+public static ManualResetEvent allDone = new ManualResetEvent(false);
+```
+
+```csharp
+// Client
 private static ManualResetEvent connectDone = new ManualResetEvent(false);
+private static ManualResetEvent sendDone = new ManualResetEvent(false);
+private static ManualResetEvent receiveDone = new ManualResetEvent(false);
 ```
 
 今回のコードで出てくるメソッドは `WaitOne()`、`Set()`、`Reset()`。
@@ -49,3 +59,50 @@ private static ManualResetEvent connectDone = new ManualResetEvent(false);
 
 > イベントの状態を非シグナル状態に設定し、スレッドをブロックします。  
 > [EventWaitHandle.Reset メソッド](https://docs.microsoft.com/ja-jp/dotnet/api/system.threading.eventwaithandle.reset?view=netframework-4.8#System_Threading_EventWaitHandle_Reset)
+
+### `BeginAccept`, `EndAccept`
+
+```csharp
+listener.BeginAccept(new AsyncCallback(AcceptCallback), listener);
+```
+
+```csharp
+Socket Socket.EndAccept(IAsyncResult asyncResult)
+```
+
+> Asynchronously accepts an incoming connection attempt and creates a new System.Net.Sockets.Socket to handle remote host communication.
+
+- [Socket.BeginAccept メソッド (System.Net.Sockets) | Microsoft Docs](https://docs.microsoft.com/ja-jp/dotnet/api/system.net.sockets.socket.beginaccept?view=netframework-4.8#System_Net_Sockets_Socket_BeginAccept_System_AsyncCallback_System_Object_)
+- [Socket.EndAccept メソッド (System.Net.Sockets) | Microsoft Docs](https://docs.microsoft.com/ja-jp/dotnet/api/system.net.sockets.socket.endaccept?view=netframework-4.8#System_Net_Sockets_Socket_EndAccept_System_IAsyncResult_)
+- [IAsyncResult インターフェイス (System) | Microsoft Docs](https://docs.microsoft.com/ja-jp/dotnet/api/system.iasyncresult?view=netframework-4.8)
+
+### `SendCallback()`
+
+server は `Shutdown()` と `Close()` を呼んでいるが、
+
+```csharp
+// Server
+
+// Complete sending the data to the remote device.
+int bytesSent = handler.EndSend(ar);
+Console.WriteLine("Sent {0} bytes to client.", bytesSent);
+
+handler.Shutdown(SocketShutdown.Both);
+handler.Close();
+```
+
+client の方は `Socket` に対しては何もせず、`ManualResetEvent` の `Set()` を呼んでいる。  
+（＝ `sendDone` をシグナル状態に変更している）
+
+```csharp
+// Client
+
+// Complete sending the data to the remote device.
+int bytesSent = client.EndSend(ar);
+Console.WriteLine("Sent {0} bytes to server.", bytesSent);
+
+// Signal that all bytes have been sent.
+sendDone.Set();
+```
+
+これが「server は終了せず待機し続ける一方、client は終了する」という動作になっている原因だろうか？
