@@ -81,7 +81,17 @@ Socket Socket.EndAccept(IAsyncResult asyncResult)
 3. connect されると、`AcceptCallback()` が `IAsyncResult ar` と共に呼ばれる。
    1. `IAsyncResult ar` のメンバー（プロパティ？フィールド？）である `AsyncState` という object をキャストして `listener` という `Socket` にする。
    2. `listener` が `EndAccept()` を呼び、client からの接続を handle するための新しい `Socket`、`handler` を作り出す。
-   3. `handler` が `BeginReceive()` (with `ReadCallback`) を呼び、 client から送られてくるデータの受信を開始する。
+   3. `handler` が `BeginReceive()` (with `ReadCallback`) を呼び、 client から送られてくるデータを受信するため、待機を開始する。
+4. データの受信が始まると、`ReadCallback()` が `IAsyncResult ar` と共に呼ばれる。
+   1. `IAsyncResult ar` のメンバーである `AsyncState` という object をキャストして `state` という `StateObject` （これは自分で定義したもの）にする。
+   2. `StateObject state` がメンバーとして持つ `Socket` を `handler` という変数に代入する。
+   3. `handler` が `EndReceive()` を `IAsyncResult ar` と共に呼ぶ。
+   4. `state` が持つ `byte[] buffer` の中身を encode して `StringBuilder` 型である `state.sb` に入れ、それを `string` にして変数 `content` に入れる。
+      1. 終端文字をチェックして読み込み終了、もしくは、`handler` が再び `BeginReceive()` を呼ぶ。
+      2. 終端文字があった場合、`content` の中身を console に表示し、`Send()` を `Socket handler` と `string content` と共に呼ぶ。
+5. `Send()` では `content` を `byte[]` に encode して、 `BeginSend()` (with `SendCallback`) を呼ぶ。
+
+---
 
 ### `SendCallback()`
 
