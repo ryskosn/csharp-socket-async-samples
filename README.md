@@ -20,12 +20,12 @@ $ dotnet run --project Client/
 
 ### `ManualResetEvent`
 
-- [ManualResetEvent クラス (System.Threading) | Microsoft Docs](https://docs.microsoft.com/ja-jp/dotnet/api/system.threading.manualresetevent?view=netframework-4.8)
-- [同期プリミティブの概要 | Microsoft Docs](https://docs.microsoft.com/ja-jp/dotnet/standard/threading/overview-of-synchronization-primitives?view=netframework-4.8)
+- [ManualResetEvent クラス (System.Threading) | Microsoft Docs](https://docs.microsoft.com/ja-jp/dotnet/api/system.threading.manualresetevent)
+- [同期プリミティブの概要 | Microsoft Docs](https://docs.microsoft.com/ja-jp/dotnet/standard/threading/overview-of-synchronization-primitives)
 
 継承元は `WaitHandle` クラス。
 
-- [WaitHandle クラス (System.Threading) | Microsoft Docs](https://docs.microsoft.com/ja-jp/dotnet/api/system.threading.waithandle?view=netframework-4.8)
+- [WaitHandle クラス (System.Threading) | Microsoft Docs](https://docs.microsoft.com/ja-jp/dotnet/api/system.threading.waithandle)
 
 コストラクタに `false` を渡すことで非シグナル状態にする。
 
@@ -48,17 +48,17 @@ private static ManualResetEvent receiveDone = new ManualResetEvent(false);
 #### `WaitOne()`
 
 > 現在の WaitHandle がシグナルを受け取るまで、現在のスレッドをブロックします。  
-> [WaitHandle.WaitOne メソッド](https://docs.microsoft.com/ja-jp/dotnet/api/system.threading.waithandle.waitone?view=netframework-4.8#System_Threading_WaitHandle_WaitOne)
+> [WaitHandle.WaitOne メソッド](https://docs.microsoft.com/ja-jp/dotnet/api/system.threading.waithandle.waitone#System_Threading_WaitHandle_WaitOne)
 
 #### `Set()`
 
 > イベントの状態をシグナル状態に設定し、待機している 1 つ以上のスレッドが進行できるようにします。  
-> [EventWaitHandle.Set メソッド](https://docs.microsoft.com/ja-jp/dotnet/api/system.threading.eventwaithandle.set?view=netframework-4.8)
+> [EventWaitHandle.Set メソッド](https://docs.microsoft.com/ja-jp/dotnet/api/system.threading.eventwaithandle.set)
 
 #### `Reset()`
 
 > イベントの状態を非シグナル状態に設定し、スレッドをブロックします。  
-> [EventWaitHandle.Reset メソッド](https://docs.microsoft.com/ja-jp/dotnet/api/system.threading.eventwaithandle.reset?view=netframework-4.8#System_Threading_EventWaitHandle_Reset)
+> [EventWaitHandle.Reset メソッド](https://docs.microsoft.com/ja-jp/dotnet/api/system.threading.eventwaithandle.reset#System_Threading_EventWaitHandle_Reset)
 
 ### `BeginAccept`, `EndAccept`
 
@@ -72,21 +72,21 @@ Socket Socket.EndAccept(IAsyncResult asyncResult)
 
 > Asynchronously accepts an incoming connection attempt and creates a new System.Net.Sockets.Socket to handle remote host communication.
 
-- [Socket.BeginAccept メソッド (System.Net.Sockets) | Microsoft Docs](https://docs.microsoft.com/ja-jp/dotnet/api/system.net.sockets.socket.beginaccept?view=netframework-4.8#System_Net_Sockets_Socket_BeginAccept_System_AsyncCallback_System_Object_)
-- [Socket.EndAccept メソッド (System.Net.Sockets) | Microsoft Docs](https://docs.microsoft.com/ja-jp/dotnet/api/system.net.sockets.socket.endaccept?view=netframework-4.8#System_Net_Sockets_Socket_EndAccept_System_IAsyncResult_)
-- [IAsyncResult インターフェイス (System) | Microsoft Docs](https://docs.microsoft.com/ja-jp/dotnet/api/system.iasyncresult?view=netframework-4.8)
+- [Socket.BeginAccept メソッド (System.Net.Sockets) | Microsoft Docs](https://docs.microsoft.com/ja-jp/dotnet/api/system.net.sockets.socket.beginaccept#System_Net_Sockets_Socket_BeginAccept_System_AsyncCallback_System_Object_)
+- [Socket.EndAccept メソッド (System.Net.Sockets) | Microsoft Docs](https://docs.microsoft.com/ja-jp/dotnet/api/system.net.sockets.socket.endaccept#System_Net_Sockets_Socket_EndAccept_System_IAsyncResult_)
+- [IAsyncResult インターフェイス (System) | Microsoft Docs](https://docs.microsoft.com/ja-jp/dotnet/api/system.iasyncresult)
 
 ---
 
 1. `StartListening()` の中で socket を用意して、Endpoint (= ip address & port) に `Bind` して `Listen` する。
 
-2. そして `BeginAccept()` (with `AcceptCallback`) を呼び、client から connect されるのを待つ。
+2. そして [`BeginAccept()`](https://docs.microsoft.com/ja-jp/dotnet/api/system.net.sockets.socket.beginaccept) (with `AcceptCallback`) を呼び、client から connect されるのを待つ。
 
-3. connect されると、`AcceptCallback()` が `IAsyncResult ar` と共に呼ばれる。
+3. connect されると、`AcceptCallback()` が [`IAsyncResult`](https://docs.microsoft.com/ja-jp/dotnet/api/system.iasyncresult) `ar` と共に呼ばれる。
 
-   1. `IAsyncResult ar` のメンバー（プロパティ？フィールド？）である `AsyncState` という object をキャストして `listener` という `Socket` にする。
+   1. `IAsyncResult ar` のメンバー（プロパティ）である [`AsyncState`](https://docs.microsoft.com/ja-jp/dotnet/api/system.iasyncresult.asyncstate) という object をキャストして `listener` という `Socket` にする。
 
-   2. `listener` が `EndAccept()` を呼び、client からの接続を handle するための新しい `Socket`、`handler` を作り出す。
+   2. `listener` が [`EndAccept()`](https://docs.microsoft.com/ja-jp/dotnet/api/system.net.sockets.socket.endaccept) を呼び、client からの接続を handle するための新しい `Socket`、`handler` を作り出す。
 
    3. `handler` が `BeginReceive()` (with `ReadCallback`) を呼び、 client から送られてくるデータを受信するため、待機を開始する。
 
