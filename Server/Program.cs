@@ -61,6 +61,7 @@ namespace Server
                     listener.BeginAccept(new AsyncCallback(AcceptCallback), listener);
 
                     // Wait until a connection is made before continuing.
+                    // Set() が呼ばれるまでスレッドをブロックして待つ。
                     allDone.WaitOne();
                 }
             }
