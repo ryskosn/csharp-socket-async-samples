@@ -54,9 +54,10 @@ namespace Client
                     callback: new AsyncCallback(ConnectCallback),
                     state: client
                 );
+                connectDone.WaitOne();
 
                 // Send test data to the remote device.
-                Send(client, "This is a test<EOF>");
+                Send(client, "This is a test, isn't it?<EOF>");
                 sendDone.WaitOne();
 
                 // Receive the response from the remote device.
@@ -76,6 +77,7 @@ namespace Client
             }
         }
 
+        // executed in another thread.
         public static void ConnectCallback(IAsyncResult ar)
         {
             try
@@ -85,7 +87,8 @@ namespace Client
 
                 // Complete the connection.
                 client.EndConnect(ar);
-                Console.WriteLine("Socket connected to {0}", client.RemoteEndPoint.ToString());
+                Console.WriteLine("Socket connected to {0}",
+                    client.RemoteEndPoint.ToString());
 
                 // Signal that the connection has been made.
                 connectDone.Set();
