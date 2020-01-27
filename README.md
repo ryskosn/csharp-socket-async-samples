@@ -104,9 +104,23 @@ Socket Socket.EndAccept(IAsyncResult asyncResult)
 
 [Socket.EndAccept メソッド (System.Net.Sockets) | Microsoft Docs](https://docs.microsoft.com/ja-jp/dotnet/api/system.net.sockets.socket.endaccept#System_Net_Sockets_Socket_EndAccept_System_IAsyncResult_)
 
+#### `IAsyncResult`
+
 [IAsyncResult インターフェイス (System) | Microsoft Docs](https://docs.microsoft.com/ja-jp/dotnet/api/system.iasyncresult)
 
+```csharp
+public object AsyncState { get; }
+```
+
+> 非同期操作に関する情報を限定または格納するユーザー定義オブジェクト。
+
+> このプロパティは、非同期操作を開始するメソッドの最後のパラメーターであるオブジェクトを返します。
+
+[IAsyncResult.AsyncState プロパティ (System) | Microsoft Docs](https://docs.microsoft.com/ja-jp/dotnet/api/system.iasyncresult.asyncstate#System_IAsyncResult_AsyncState)
+
 ---
+
+### Server の処理の流れ
 
 1. `StartListening()` の中で socket を用意して、Endpoint (= ip address & port) に [`Bind`](https://docs.microsoft.com/ja-jp/dotnet/api/system.net.sockets.socket.bind) して [`Listen`](https://docs.microsoft.com/ja-jp/dotnet/api/system.net.sockets.socket.listen) する。
 
@@ -129,10 +143,14 @@ Socket Socket.EndAccept(IAsyncResult asyncResult)
    3. `handler` が [`EndReceive()`](https://docs.microsoft.com/ja-jp/dotnet/api/system.net.sockets.socket.endreceive) を、引数 `IAsyncResult ar` と共に呼ぶ。
 
    4. `state` が持つ `byte[] buffer` の中身を encode して [`StringBuilder`](https://docs.microsoft.com/ja-jp/dotnet/api/system.text.stringbuilder) 型である `state.sb` に入れ、それを `string` にして変数 `content` に入れる。
+
       1. 終端文字をチェックして読み込み終了、もしくは、`handler` が再び `BeginReceive()` を呼ぶ。
+
       2. 終端文字があった場合、`content` の中身を console に表示し、`Send()`（自分で定義した static method の方であり、[`Socket.Send`](https://docs.microsoft.com/ja-jp/dotnet/api/system.net.sockets.socket.send) ではない） を呼ぶ。引数は `Socket handler` と `string content`。
 
 5. `Send()` では `content` を `byte[]` に encode して、 [`BeginSend()`](https://docs.microsoft.com/ja-jp/dotnet/api/system.net.sockets.socket.beginsend) with `SendCallback()` を呼ぶ。
+
+   1. `Send()` は `string` を `byte[]` に encode して `BeginSend()` を呼ぶだけのラッパー。
 
    > アプリケーションが BeginSend を呼び出すと、システムは別のスレッドを使用して指定されたコールバックメソッドを実行し、Socket が要求したバイト数を送信するか例外をスローするまで、EndSend でブロックします。
 
