@@ -78,9 +78,9 @@ Socket Socket.EndAccept(IAsyncResult asyncResult)
 
 ---
 
-1. `StartListening()` の中で socket を用意して、Endpoint (= ip address & port) に `Bind` して `Listen` する。
+1. `StartListening()` の中で socket を用意して、Endpoint (= ip address & port) に [`Bind`](https://docs.microsoft.com/ja-jp/dotnet/api/system.net.sockets.socket.bind) して [`Listen`](https://docs.microsoft.com/ja-jp/dotnet/api/system.net.sockets.socket.listen) する。
 
-2. そして [`BeginAccept()`](https://docs.microsoft.com/ja-jp/dotnet/api/system.net.sockets.socket.beginaccept) (with `AcceptCallback`) を呼び、client から connect されるのを待つ。
+2. そして [`BeginAccept()`](https://docs.microsoft.com/ja-jp/dotnet/api/system.net.sockets.socket.beginaccept) (with `AcceptCallback()`) を呼び、client から connect されるのを待つ。
 
 3. connect されると、`AcceptCallback()` が [`IAsyncResult`](https://docs.microsoft.com/ja-jp/dotnet/api/system.iasyncresult) `ar` と共に呼ばれる。
 
@@ -88,7 +88,7 @@ Socket Socket.EndAccept(IAsyncResult asyncResult)
 
    2. `listener` が [`EndAccept()`](https://docs.microsoft.com/ja-jp/dotnet/api/system.net.sockets.socket.endaccept) を呼び、client からの接続を handle するための新しい `Socket`、`handler` を作り出す。
 
-   3. `handler` が `BeginReceive()` (with `ReadCallback`) を呼び、 client から送られてくるデータを受信するため、待機を開始する。
+   3. `handler` が [`BeginReceive()`](https://docs.microsoft.com/ja-jp/dotnet/api/system.net.sockets.socket.beginreceive) (with `ReadCallback()`) を呼び、 client から送られてくるデータを受信するため、待機を開始する。
 
 4. データの受信が始まると、`ReadCallback()` が `IAsyncResult ar` と共に呼ばれる。
 
@@ -96,13 +96,13 @@ Socket Socket.EndAccept(IAsyncResult asyncResult)
 
    2. `StateObject state` がメンバーとして持つ `Socket` を `handler` という変数に代入する。
 
-   3. `handler` が `EndReceive()` を `IAsyncResult ar` と共に呼ぶ。
+   3. `handler` が [`EndReceive()`](https://docs.microsoft.com/ja-jp/dotnet/api/system.net.sockets.socket.endreceive) を `IAsyncResult ar` と共に呼ぶ。
 
-   4. `state` が持つ `byte[] buffer` の中身を encode して `StringBuilder` 型である `state.sb` に入れ、それを `string` にして変数 `content` に入れる。
+   4. `state` が持つ `byte[] buffer` の中身を encode して [`StringBuilder`](https://docs.microsoft.com/ja-jp/dotnet/api/system.text.stringbuilder) 型である `state.sb` に入れ、それを `string` にして変数 `content` に入れる。
       1. 終端文字をチェックして読み込み終了、もしくは、`handler` が再び `BeginReceive()` を呼ぶ。
-      2. 終端文字があった場合、`content` の中身を console に表示し、`Send()` を `Socket handler` と `string content` と共に呼ぶ。
+      2. 終端文字があった場合、`content` の中身を console に表示し、[`Send()`](https://docs.microsoft.com/ja-jp/dotnet/api/system.net.sockets.socket.send) を `Socket handler` と `string content` と共に呼ぶ。
 
-5. `Send()` では `content` を `byte[]` に encode して、 `BeginSend()` (with `SendCallback`) を呼ぶ。
+5. `Send()` では `content` を `byte[]` に encode して、 [`BeginSend()`](https://docs.microsoft.com/ja-jp/dotnet/api/system.net.sockets.socket.beginsend) (with `SendCallback()`) を呼ぶ。
 
 ---
 
