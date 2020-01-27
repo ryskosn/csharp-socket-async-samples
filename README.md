@@ -76,6 +76,13 @@ Socket Socket.EndAccept(IAsyncResult asyncResult)
 - [Socket.EndAccept メソッド (System.Net.Sockets) | Microsoft Docs](https://docs.microsoft.com/ja-jp/dotnet/api/system.net.sockets.socket.endaccept?view=netframework-4.8#System_Net_Sockets_Socket_EndAccept_System_IAsyncResult_)
 - [IAsyncResult インターフェイス (System) | Microsoft Docs](https://docs.microsoft.com/ja-jp/dotnet/api/system.iasyncresult?view=netframework-4.8)
 
+1. `StartListening()` の中で socket を用意して、Endpoint (= ip address & port) に `Bind` して `Listen` する。
+2. そして `BeginAccept()` (with `AcceptCallback`) を呼び、client から connect されるのを待つ。
+3. connect されると、`AcceptCallback()` が `IAsyncResult ar` と共に呼ばれる。
+   1. `IAsyncResult ar` のメンバー（プロパティ？フィールド？）である `AsyncState` という object をキャストして `listener` という `Socket` にする。
+   2. `listener` が `EndAccept()` を呼び、client からの接続を handle するための新しい `Socket`、`handler` を作り出す。
+   3. `handler` が `BeginReceive()` (with `ReadCallback`) を呼び、 client から送られてくるデータの受信を開始する。
+
 ### `SendCallback()`
 
 server は `Shutdown()` と `Close()` を呼んでいるが、
