@@ -186,3 +186,12 @@ sendDone.Set();
 ```
 
 これが「server は終了せず待機し続ける一方、client は終了する」という動作になっている原因だろうか？
+
+違った。そういうわけではなく、client の方は `Receive` した response を console に書いたら
+
+```csharp
+client.Shutdown(SocketShutdown.Both);
+client.Close();
+```
+
+として、これでメインスレッドが終了している。
