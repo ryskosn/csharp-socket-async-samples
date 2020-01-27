@@ -214,3 +214,13 @@ while (true)
         allDone.WaitOne();
     }
 ```
+
+### 読む際のポイント
+
+- メインスレッドの処理の流れを追う。
+
+  - `AsyncCallback` で渡すメソッドは別スレッドで実行される。
+
+- callback の中で `IAsyncResult.AsyncState` から `Socket` を取り出すところを追う。
+
+- `ManualResetEvent` の `WaitOne()` で待機して、 `Set()` で待機解除を通知するところを追う。
