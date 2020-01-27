@@ -187,7 +187,9 @@ sendDone.Set();
 
 これが「server は終了せず待機し続ける一方、client は終了する」という動作になっている原因だろうか？
 
-違った。そういうわけではなく、client の方は `Receive` した response を console に書いたら
+違った。
+
+そういうわけではなく、client の方は `Receive` した `response` を console に書いたら
 
 ```csharp
 client.Shutdown(SocketShutdown.Both);
@@ -195,3 +197,20 @@ client.Close();
 ```
 
 として、これでメインスレッドが終了している。
+
+一方、server はメインスレッドで以下の通り `while` ループが回っているから終了しない。
+
+```csharp
+while (true)
+    {
+        // Set the event to nonsignaled state.
+        allDone.Reset();
+        // Start an asynchronous socket to listen for connections.
+        Console.WriteLine("Waiting for a connection...");
+        listener.BeginAccept(new AsyncCallback(AcceptCallback), listener);
+
+        // Wait until a connection is made before continuing.
+        // Set() が呼ばれるまでスレッドをブロックして待つ。
+        allDone.WaitOne();
+    }
+```
