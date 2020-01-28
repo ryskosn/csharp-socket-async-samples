@@ -224,3 +224,9 @@ while (true)
 - callback の中で `IAsyncResult.AsyncState` から `Socket` を取り出すところを追う。
 
 - `ManualResetEvent` の `WaitOne()` で待機して、 `Set()` で待機解除を通知するところを追う。
+
+## ループさせるには
+
+ちょっとわからなくなってきた。
+
+一度、同期処理でやり取りするのを書いてみて、それを async/await に対応させるのがよいかも？
