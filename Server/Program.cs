@@ -3,6 +3,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
+using System.Reflection;
 
 namespace Server
 {
@@ -30,6 +31,9 @@ namespace Server
 
         public static void StartListening()
         {
+            var methodName = MethodBase.GetCurrentMethod().Name;
+            Console.WriteLine("=== {0}() ===", methodName);
+
             // Establish the local endpoint for the socket.
             // The DNS name of the computer
             // running the listener is "host.contoso.com" <- ???
@@ -75,6 +79,9 @@ namespace Server
 
         public static void AcceptCallback(IAsyncResult ar)
         {
+            var methodName = MethodBase.GetCurrentMethod().Name;
+            Console.WriteLine("=== {0}() ===", methodName);
+
             // Signal the main thread to continue.
             allDone.Set();
 
@@ -100,6 +107,9 @@ namespace Server
 
         public static void ReadCallback(IAsyncResult ar)
         {
+            var methodName = MethodBase.GetCurrentMethod().Name;
+            Console.WriteLine("=== {0}() ===", methodName);
+
             string content = string.Empty;
 
             // Retrieve the state object and the handler socket
@@ -146,6 +156,9 @@ namespace Server
         }
         private static void Send(Socket handler, string data)
         {
+            var methodName = MethodBase.GetCurrentMethod().Name;
+            Console.WriteLine("=== {0}() ===", methodName);
+
             // Convert the string data to byte data using ASCII encoding.
             byte[] byteData = Encoding.ASCII.GetBytes(data);
 
@@ -162,6 +175,9 @@ namespace Server
 
         private static void SendCallback(IAsyncResult ar)
         {
+            var methodName = MethodBase.GetCurrentMethod().Name;
+            Console.WriteLine("=== {0}() ===", methodName);
+
             try
             {
                 // Retrieve the socket from the state object.

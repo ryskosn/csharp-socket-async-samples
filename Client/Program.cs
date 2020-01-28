@@ -3,6 +3,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using System.Text;
+using System.Reflection;
 
 namespace Client
 {
@@ -32,6 +33,9 @@ namespace Client
 
         private static void StartClient()
         {
+            var methodName = MethodBase.GetCurrentMethod().Name;
+            Console.WriteLine("=== {0}() ===", methodName);
+
             // Connect to remote device.
             try
             {
@@ -56,19 +60,26 @@ namespace Client
                 );
                 connectDone.WaitOne();
 
-                Console.Write("Enter the message:");
-                var msg = Console.ReadLine();
-                // Send test data to the remote device.
-                Send(client, msg + "<EOF>");
-                sendDone.WaitOne();
+                while (true)
+                {
+                    sendDone.Reset();
+                    Console.Write("Enter the message: ");
+                    var msg = Console.ReadLine();
 
-                // Receive the response from the remote device.
-                Receive(client);
-                receiveDone.WaitOne();
+                    // Send test data to the remote device.
+                    Send(client, msg + "<EOF>");
+                    sendDone.WaitOne();
 
-                // Write the response to the console.
-                Console.WriteLine("Response received : {0}", response);
+                    // receiveDone.Reset();
+                    // Receive the response from the remote device.
+                    Receive(client);
+                    receiveDone.WaitOne();
 
+                    // Write the response to the console.
+                    Console.WriteLine("Response received : {0}", response);
+
+                    if (msg == "exit") { break; }
+                }
                 // Release the socket.
                 client.Shutdown(SocketShutdown.Both);
                 client.Close();
@@ -82,6 +93,8 @@ namespace Client
         // executed in another thread.
         public static void ConnectCallback(IAsyncResult ar)
         {
+            var methodName = MethodBase.GetCurrentMethod().Name;
+            Console.WriteLine("=== {0}() ===", methodName);
             try
             {
                 // Retrieve the socket from the state object.
@@ -103,6 +116,8 @@ namespace Client
 
         private static void Receive(Socket client)
         {
+            var methodName = MethodBase.GetCurrentMethod().Name;
+            Console.WriteLine("=== {0}() ===", methodName);
             try
             {
                 // Create the state object.
@@ -129,6 +144,8 @@ namespace Client
 
         private static void ReceiveCallback(IAsyncResult ar)
         {
+            var methodName = MethodBase.GetCurrentMethod().Name;
+            Console.WriteLine("=== {0}() ===", methodName);
             try
             {
                 // Retrieve the state object and the client socket
@@ -138,6 +155,7 @@ namespace Client
 
                 // Read data from the remote device.
                 int bytesRead = client.EndReceive(ar);
+                Console.WriteLine("bytesRead: {0}", bytesRead);
 
                 if (bytesRead > 0)
                 {
@@ -172,6 +190,8 @@ namespace Client
 
         private static void Send(Socket client, string data)
         {
+            var methodName = MethodBase.GetCurrentMethod().Name;
+            Console.WriteLine("=== {0}() ===", methodName);
             // Convert the string data to byte data using ASCII encoding.
             byte[] byteData = Encoding.ASCII.GetBytes(data);
 
@@ -188,6 +208,8 @@ namespace Client
 
         private static void SendCallback(IAsyncResult ar)
         {
+            var methodName = MethodBase.GetCurrentMethod().Name;
+            Console.WriteLine("=== {0}() ===", methodName);
             try
             {
                 // Retrieve the socket from the state object.
