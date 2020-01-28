@@ -18,6 +18,43 @@ namespace Server
         // Received data string.
         public StringBuilder sb = new StringBuilder();
     }
+    public class SynchronousSocketListener
+    {
+        private const int port = 11000;
+        public SynchronousSocketListener() { }
+        public static void StartListeningSync()
+        {
+            var methodName = MethodBase.GetCurrentMethod().Name;
+            Console.WriteLine("=== {0}() ===", methodName);
+
+            IPHostEntry ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());
+            IPAddress ipAddress = ipHostInfo.AddressList[0];
+            IPEndPoint localEndPoint = new IPEndPoint(ipAddress, port);
+
+            // Create a TCP/IP socket.
+            Socket listener = new Socket(
+                addressFamily: ipAddress.AddressFamily,
+                socketType: SocketType.Stream,
+                protocolType: ProtocolType.Tcp
+            );
+            listener.Bind(localEndPoint);
+            listener.Listen(100);
+            try
+            {
+                listener.Accept();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.ToString());
+            }
+        }
+        public static int Main(string[] args)
+        {
+            Console.WriteLine("Hello, this is server!");
+            StartListeningSync();
+            return 0;
+        }
+    }
 
     public class AsynchronousSocketListener
     {
