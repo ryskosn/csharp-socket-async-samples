@@ -56,8 +56,10 @@ namespace Client
                 );
                 connectDone.WaitOne();
 
+                Console.Write("Enter the message:");
+                var msg = Console.ReadLine();
                 // Send test data to the remote device.
-                Send(client, "This is a test, isn't it?<EOF>");
+                Send(client, msg + "<EOF>");
                 sendDone.WaitOne();
 
                 // Receive the response from the remote device.
