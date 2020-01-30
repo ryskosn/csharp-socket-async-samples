@@ -18,6 +18,12 @@ namespace Server
         // Received data string.
         public StringBuilder sb = new StringBuilder();
     }
+
+    public class ReceivedData
+    {
+        public const int bufferSize = 1024;
+        public byte[] buffer = new byte[bufferSize];
+    }
     public class SynchronousSocketListener
     {
         private const int port = 11000;
@@ -39,15 +45,40 @@ namespace Server
             );
             listener.Bind(localEndPoint);
             listener.Listen(100);
+            Console.WriteLine("Waiting for a connection...");
+
+            // Accept, Receive
+            Socket handler;
             try
             {
-                listener.Accept();
+                handler = listener.Accept();
+                int bufSize = 1024;
+                byte[] buffer = new byte[bufSize];
+                StringBuilder sb = new StringBuilder();
+
+                int bytesReceived = handler.Receive(buffer, bufSize, 0);
+
+                if (bytesReceived > 0)
+                {
+                    Console.WriteLine("bytesReceived: {0}", bytesReceived);
+                    sb.Append(Encoding.ASCII.GetString(buffer, 0, bytesReceived));
+
+                    var content = sb.ToString();
+                    if (content.IndexOf("<EOF>") > -1)
+                    {
+                        Console.WriteLine("Read {0} bytes from socket. \n Data : {1}",
+                            content.Length, content);
+                        handler.Send(buffer);
+                    }
+                }
             }
             catch (Exception e)
             {
                 Console.WriteLine(e.ToString());
             }
         }
+
+
         public static int Main(string[] args)
         {
             Console.WriteLine("Hello, this is server!");
@@ -232,7 +263,7 @@ namespace Server
                 Console.WriteLine(e.ToString());
             }
         }
-        public static int Main(string[] args)
+        public static int Main_(string[] args)
         {
             Console.WriteLine("Hello, this is server!");
             StartListening();
