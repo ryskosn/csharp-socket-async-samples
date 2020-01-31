@@ -19,6 +19,43 @@ namespace Client
         // Received data string.
         public StringBuilder sb = new StringBuilder();
     }
+
+    public class SynchronousClient
+    {
+        private const int port = 11000;
+        private static string response = string.Empty;
+
+
+        public static void StartClient()
+        {
+            var methodName = MethodBase.GetCurrentMethod().Name;
+            Console.WriteLine("=== {0}() ===", methodName);
+
+            IPHostEntry ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());
+            IPAddress ipAddress = ipHostInfo.AddressList[0];
+            IPEndPoint remoteEndPoint = new IPEndPoint(ipAddress, port);
+            Socket client = new Socket(
+                addressFamily: ipAddress.AddressFamily,
+                socketType: SocketType.Stream,
+                protocolType: ProtocolType.Tcp
+            );
+
+            try
+            {
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.ToString());
+            }
+        }
+        public static int Main_(string[] args)
+        {
+            Console.WriteLine("Hello, this is synchronous client!");
+            StartClient();
+            return 0;
+        }
+    }
     public class AsyncronousClient
     {
         // The port number for the remote device.
@@ -228,7 +265,7 @@ namespace Client
             }
         }
 
-        public static int Main(string[] args)
+        public static int Main_(string[] args)
         {
             Console.WriteLine("Hello, this is client!");
             StartClient();
