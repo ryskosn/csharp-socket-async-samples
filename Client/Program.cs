@@ -7,25 +7,10 @@ using System.Reflection;
 
 namespace Client
 {
-    // State object for receiveing data from remote device.
-    public class StateObject
-    {
-        // Client socket.
-        public Socket workSocket = null;
-        // Size of receive buffer.
-        public const int BufferSize = 256;
-        // Receive buffer.
-        public byte[] buffer = new byte[BufferSize];
-        // Received data string.
-        public StringBuilder sb = new StringBuilder();
-    }
-
     public class SynchronousClient
     {
         private const int port = 11000;
         private static string response = string.Empty;
-
-
         public static void StartClient()
         {
             var methodName = MethodBase.GetCurrentMethod().Name;
@@ -42,20 +27,34 @@ namespace Client
 
             try
             {
-
+                client.Connect(remoteEndPoint);
+                Console.WriteLine("Connect success.");
             }
             catch (Exception e)
             {
                 Console.WriteLine(e.ToString());
             }
         }
-        public static int Main_(string[] args)
+        public static int Main(string[] args)
         {
             Console.WriteLine("Hello, this is synchronous client!");
             StartClient();
             return 0;
         }
     }
+    // State object for receiveing data from remote device.
+    public class StateObject
+    {
+        // Client socket.
+        public Socket workSocket = null;
+        // Size of receive buffer.
+        public const int BufferSize = 256;
+        // Receive buffer.
+        public byte[] buffer = new byte[BufferSize];
+        // Received data string.
+        public StringBuilder sb = new StringBuilder();
+    }
+
     public class AsyncronousClient
     {
         // The port number for the remote device.

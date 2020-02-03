@@ -7,18 +7,6 @@ using System.Reflection;
 
 namespace Server
 {
-    public class StateObject
-    {
-        // Client socket.
-        public Socket workSocket = null;
-        // Size of receive buffer.
-        public const int BufferSize = 1024;
-        // Receive buffer.
-        public byte[] buffer = new byte[BufferSize];
-        // Received data string.
-        public StringBuilder sb = new StringBuilder();
-    }
-
     public class ReceivedData
     {
         public const int bufferSize = 1024;
@@ -52,6 +40,7 @@ namespace Server
             try
             {
                 handler = listener.Accept();
+                Console.WriteLine("Accept success.");
                 int bufSize = 1024;
                 byte[] buffer = new byte[bufSize];
                 StringBuilder sb = new StringBuilder();
@@ -85,6 +74,18 @@ namespace Server
             StartListeningSync();
             return 0;
         }
+    }
+
+    public class StateObject
+    {
+        // Client socket.
+        public Socket workSocket = null;
+        // Size of receive buffer.
+        public const int BufferSize = 1024;
+        // Receive buffer.
+        public byte[] buffer = new byte[BufferSize];
+        // Received data string.
+        public StringBuilder sb = new StringBuilder();
     }
 
     public class AsynchronousSocketListener
