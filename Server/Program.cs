@@ -56,7 +56,7 @@ namespace Server
                     }
 
                     Console.WriteLine("Text received : {0}", str);
-                    byte[] msg = Encoding.ASCII.GetBytes(str);
+                    byte[] msg = Encoding.ASCII.GetBytes(str + " sent from client.");
                     handler.Send(msg);
                     handler.Shutdown(SocketShutdown.Both);
                     handler.Close();

@@ -15,6 +15,8 @@ namespace Client
             var methodName = MethodBase.GetCurrentMethod().Name;
             Console.WriteLine("=== {0}() ===", methodName);
 
+            byte[] bytes = new byte[1024];
+
             IPHostEntry ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());
             IPAddress ipAddress = ipHostInfo.AddressList[0];
             IPEndPoint remoteEndPoint = new IPEndPoint(ipAddress, port);
@@ -28,6 +30,13 @@ namespace Client
             {
                 client.Connect(remoteEndPoint);
                 Console.WriteLine("Connect success.");
+                byte[] msg = Encoding.ASCII.GetBytes("This is a test.<EOF>");
+                int bytesSent = client.Send(msg);
+                int bytesRec = client.Receive(bytes);
+                Console.WriteLine("Echoed test = {0}", Encoding.ASCII.GetString(bytes, 0, bytesRec));
+
+                client.Shutdown(SocketShutdown.Both);
+                client.Close();
             }
             catch (Exception e)
             {
