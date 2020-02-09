@@ -4,6 +4,8 @@ using System.Net.Sockets;
 using System.Text;
 using System.Reflection;
 
+// https://docs.microsoft.com/ja-jp/dotnet/api/system.net.sockets.tcplistener?view=netframework-4.8
+
 namespace Server
 {
     public class ReceivedData
@@ -16,7 +18,8 @@ namespace Server
     {
         private const int port = 11000;
 
-        public static ReceivedData data = new ReceivedData();
+        // public static ReceivedData data = new ReceivedData();
+        public static string myData = null;
         public static string str = null;
 
         public static void StartListeningSync()
@@ -28,28 +31,33 @@ namespace Server
             IPAddress ipAddress = ipHostInfo.AddressList[0];
             IPEndPoint localEndPoint = new IPEndPoint(ipAddress, port);
 
-            // Create a TCP/IP socket.
-            Socket listener = new Socket(
-                addressFamily: ipAddress.AddressFamily,
-                socketType: SocketType.Stream,
-                protocolType: ProtocolType.Tcp
-            );
+            TcpListener listener = new TcpListener(localEndPoint);
 
+            byte[] bytes = new byte[256];
             try
             {
-                listener.Bind(localEndPoint);
-                listener.Listen(100);
+                listener.Start();
+                myData = null;
+
                 while (true)
                 {
-                    Console.WriteLine("Waiting for a connection...");
-                    Socket handler = listener.Accept();
 
-                    // Start listening for connection.
-                    while (true)
+                    Console.WriteLine("Waiting for a connection...");
+                    TcpClient client = listener.AcceptTcpClient();
+                    Console.WriteLine("Connected!");
+
+
+                    NetworkStream stream = client.GetStream();
+                    int i;
+                    while ((i = stream.Read(bytes, 0, bytes.Length)) != 0)
                     {
-                        int bytesReceived = handler.Receive(data.buffer);
-                        str += Encoding.ASCII.GetString(data.buffer, 0, bytesReceived);
-                        if (str.IndexOf("<EOF>") > 01)
+                        myData = Encoding.ASCII.GetString(bytes, 0, i);
+                        Console.WriteLine("Received: {0}", myData);
+
+                        myData = myData.ToUpper();
+                        byte[] msg = Encoding.ASCII.GetString(myData, 0, msg.Length);
+                        stream.Write(msg, 0, msg.Length);
+                        if (str.IndexOf("<EOF>") > -1)
                         {
                             break;
                         }
